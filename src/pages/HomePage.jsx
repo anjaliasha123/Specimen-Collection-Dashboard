@@ -1,119 +1,36 @@
 import MapView from '../components/MapView';
 import LocationSearch from '../components/LocationSearch';
+import { useThunk } from '../hooks/useThunk';
+import { fetchData } from '../store/index';
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from 'react';
+import Skeleton from '../components/utility/Skeleton';
+import { GoSync } from 'react-icons/go';
 
-function HomePage(){
-    const itemsDummy = {
-        type: "FeatureCollection",
-        features: [
-            {
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        -83.2142,
-                        35.11419
-                    ]
-                },
-                "properties": {
-                    "country": "United States",
-                    "phylum": "Chordata",
-                    "scientificName": "Plethodon jordani",
-                    "genus": "Plethodon",
-                    "state": "North Carolina",
-                    "family": "Plethodontidae",
-                    "kingdom": "Animalia",
-                    "class": "Amphibia"
-                },
-                "type": "Feature"
-            },
-            {
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        -87.73791,
-                        40.13832
-                    ]
-                },
-                "properties": {
-                    "country": "United States",
-                    "phylum": "Chordata",
-                    "scientificName": "Ambystoma opacum",
-                    "genus": "Ambystoma",
-                    "state": "Illinois",
-                    "family": "Ambystomatidae",
-                    "kingdom": "Animalia",
-                    "class": "Amphibia"
-                },
-                "type": "Feature"
-            },
-            {
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        -82.8982,
-                        32.0909
-                    ]
-                },
-                "properties": {
-                    "country": "United States",
-                    "phylum": "Chordata",
-                    "scientificName": "Nerodia taxispilota",
-                    "genus": "Nerodia",
-                    "state": "Georgia",
-                    "family": "Colubridae",
-                    "kingdom": "Animalia",
-                    "class": "Reptilia"
-                },
-                "type": "Feature"
-            },
-            {
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        -89.43808,
-                        37.50383
-                    ]
-                },
-                "properties": {
-                    "country": "United States",
-                    "phylum": "Chordata",
-                    "scientificName": "Nerodia cyclopion",
-                    "genus": "Nerodia",
-                    "state": "Illinois",
-                    "family": "Colubridae",
-                    "kingdom": "Animalia",
-                    "class": "Reptilia"
-                },
-                "type": "Feature"
-            },
-            {
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        -84.49361,
-                        31.47494
-                    ]
-                },
-                "properties": {
-                    "country": "United States",
-                    "phylum": "Chordata",
-                    "scientificName": "Farancia abacura",
-                    "genus": "Farancia",
-                    "state": "Georgia",
-                    "family": "Colubridae",
-                    "kingdom": "Animalia",
-                    "class": "Reptilia"
-                },
-                "type": "Feature"
-            },
-        ],
-    };
+function HomePage() {
     
+
+    const [doFetchData, isLoadingData, isLoadingError] = useThunk(fetchData);
+
+    const { data } = useSelector((state) => {
+        return state.inhs;
+    });
+    useEffect(() => {
+        doFetchData();
+    }, []);
+
+    let content;
+    if (isLoadingData) content = <Skeleton times={10} className="h-10 w-full" />;
+    else if (isLoadingError) content = <div>Error loading data...</div>
+    else content =  <LocationSearch />;
     return (
         <div className="h-screen w-screen grid grid-cols-2 gap-4">
-                <MapView data={itemsDummy} className="col-span-1 p-2" />
+            {isLoadingData && <div className="col-span-1 p-2"> Loading Map Contents... <GoSync className='animate-spin'/></div>}
+            {!isLoadingData && <MapView data={data} className="col-span-1 p-2" />}
             <div className="col-span-1 p-2">
-                <LocationSearch />
+                {content}
             </div>
+            {/* {console.log(data)} */}
         </div>
     );
 }

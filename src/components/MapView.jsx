@@ -12,7 +12,7 @@ import Cluster from "ol/source/Cluster";
 import ToolTip from "./ToolTip";
 
 function MapView({ data }) {
-    // console.log(data);
+    // console.log('checking data: ',data);
     const mapRef = useRef(null);
     const selectedFeatureRef = useRef(null);
     const [tooltipData, setTooltipData] = useState({ visible: false, x: 0, y: 0, content: "" });

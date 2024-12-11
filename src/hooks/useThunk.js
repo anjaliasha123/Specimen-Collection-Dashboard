@@ -2,19 +2,19 @@ import { useDispatch } from "react-redux";
 import { useState, useCallback } from "react";
 
 function useThunk(thunk){
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [loadingError, setLoadingError] = useState(null);
-
     const dispatch = useDispatch();
-    const runThunk = useCallback(()=>{
+    const runThunk = useCallback(
         (arg)=>{
-            setLoading(true);
+            setIsLoading(true);
             dispatch(thunk(arg))
             .unwrap()
-            .catch(err=>setLoadingError(err))
-            .finally(()=>setLoading(false));
+            .catch((err)=>setLoadingError(err))
+            .finally(()=>setIsLoading(false));
         }
-    }, [dispatch, thunk]);
-
+        , [dispatch, thunk]);
     return [runThunk, isLoading, loadingError];
 }
+
+export {useThunk};
