@@ -1,0 +1,16 @@
+
+#root {
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  #map{
+    height: 100%;
+  }
+  .ol-overlaycontainer-stopevent{
+    width: 15% !important;
+    top: 60%;
+  }
+
+  
