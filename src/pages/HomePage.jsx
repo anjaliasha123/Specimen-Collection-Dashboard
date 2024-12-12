@@ -16,7 +16,7 @@ function HomePage() {
         return state.inhs;
     });
     useEffect(() => {
-        doFetchData();
+        // doFetchData();
     }, []);
 
     let content;

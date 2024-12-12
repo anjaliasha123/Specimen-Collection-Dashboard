@@ -113,7 +113,13 @@ const inhsSlice = createSlice({
         collectionName: 'herp',
         isLoading: false,
         error: null,
-        selectedFeatureToEdit: null
+        selectedFeatureToView: null,
+    },
+    reducers: {
+        setSelectedFeatureToView: (state, action)=>{
+            state.selectedFeatureToView = action.payload;
+            console.log('state selected:', state.selectedFeatureToView);
+        }
     },
     extraReducers(builder){
         builder.addCase(
@@ -139,3 +145,4 @@ const inhsSlice = createSlice({
 });
 
 export const inhsReducer = inhsSlice.reducer;
+export const {setSelectedFeatureToView} = inhsSlice.actions;

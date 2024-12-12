@@ -10,13 +10,15 @@ import { fromLonLat } from "ol/proj";
 import Legend from "./Legend";
 import Cluster from "ol/source/Cluster";
 import ToolTip from "./ToolTip";
+import { useDispatch} from "react-redux";
+import { setSelectedFeatureToView } from "../store/slices/inhsSlice";
 
 function MapView({ data }) {
     // console.log('checking data: ',data);
     const mapRef = useRef(null);
     const selectedFeatureRef = useRef(null);
     const [tooltipData, setTooltipData] = useState({ visible: false, x: 0, y: 0, content: "" });
-    const info = document.getElementById('info');
+    const dispatch = useDispatch();
     // Styling
     const classColors = {
         Amphibia: '#719bde',
@@ -55,7 +57,7 @@ function MapView({ data }) {
     const selectedStyle = new Style({
         image: new Circle({
             radius: 9,
-            fill: new Fill({ color: "blue" }),
+            fill: new Fill({ color: "red" }),
             stroke: new Stroke({ color: "yellow", width: 2 }),
         }),
     });
@@ -68,6 +70,7 @@ function MapView({ data }) {
             selectedFeatureRef.current.setStyle(styleFunction(selectedFeatureRef.current));
             selectedFeatureRef.current.setStyle(clusterStyle(selectedFeatureRef.current));
             selectedFeatureRef.current = null;
+            dispatch(setSelectedFeatureToView(null));
         }
     }
 
@@ -110,9 +113,6 @@ function MapView({ data }) {
             if (clickedFeature) {
                 console.log(clickedFeature.values_.features.length)
                 if (clickedFeature.values_.features.length === 1) {
-                    const coordinates = clickedFeature.getGeometry().getCoordinates();
-                    // const properties = clickedFeature.getProperties();
-                    // setSubList([]);
                     const properties = clickedFeature.getProperties().features[0].getProperties()
                     if (selectedFeatureRef.current && clickedFeature === selectedFeatureRef.current) {
                         handleClose();
@@ -122,18 +122,15 @@ function MapView({ data }) {
                         }
                         clickedFeature.setStyle(selectedStyle);
                         selectedFeatureRef.current = clickedFeature;
-                        // setPopup(true);
-                        // setSelectedProperties(properties);
-                        console.log(clickedFeature.getProperties().features[0].getProperties())
+                        dispatch(setSelectedFeatureToView({...properties, geometry: ''}));
                     }
-                } else {
-                    // setPopup(false);
-                    // setSubList(clickedFeature.values_.features);
-                }
+                 } //else {
+                //     handleClose();
+                // }
             } else {
                 handleClose();
             }
-            // console.log(clickedFeature)
+
         });
 
         // Handle pointer move
@@ -143,19 +140,22 @@ function MapView({ data }) {
             if (feature) {
                 const properties = feature.getProperties();
                 if (properties.features.length == 1) {
-                    // console.log(feature);
+                    var pixel = map.getEventPixel(evt.originalEvent);
+                    var hit = map.hasFeatureAtPixel(pixel);
+                    map.getViewport().style.cursor = hit ? 'pointer' : '';
                     const properties = feature.getProperties();
                     const [x, y] = evt.coordinate;
                     let content = properties.features[0].getProperties();
                     setTooltipData({
                         visible: true,
-                        x: evt.pixel[0]+10, // Screen coordinates for position
-                        y: evt.pixel[1]-10,
+                        x: evt.pixel[0] + 10, // Screen coordinates for position
+                        y: evt.pixel[1] - 10,
                         content: content,
                     });
                 }
             } else {
                 setTooltipData((prev) => ({ ...prev, visible: false }));
+                map.getViewport().style.cursor = '';
             }
         })
         return () => { map.setTarget(null) };
