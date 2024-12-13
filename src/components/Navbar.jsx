@@ -1,11 +1,11 @@
-import { useRef, useState, useContext} from "react";
+import { useRef, useState, useContext } from "react";
 import { AuthContext } from "../helper/KeycloakProvider";
 
 
 
 function Navbar() {
-    const { isAuthenticated, login, logout } = useContext(AuthContext);
-    const handleLogin = ()=>{
+    const { isAuthenticated, login, logout, userName, isAdmin } = useContext(AuthContext);
+    const handleLogin = () => {
         login()
     }
 
@@ -14,7 +14,7 @@ function Navbar() {
             <div className="container flex flex-wrap items-center justify-between mx-auto text-slate-800">
                 <a href="#"
                     className="mr-4 block cursor-pointer py-1.5 text-base text-gray-200 font-semibold">
-                    INHS Data Dashboard
+                    INHS Data Dashboard {isAdmin ? '- Admin' : ''}
                 </a>
                 <div className="hidden lg:block">
                     <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -42,17 +42,27 @@ function Navbar() {
                                         Notifications
                                     </a>
                                 </li>
+                                {
+                                    isAdmin && (
+                                        <li
+                                            className="flex items-center p-1 text-sm gap-x-2 text-gray-200">
+                                            <a href="/requests" className="flex items-center">
+                                                Requests
+                                            </a>
+                                        </li>
+                                    )
+                                }
                                 <li
                                     className="flex items-center p-1 text-sm gap-x-2 text-gray-200">
                                     <a href="#" className="flex items-center">
-                                        <button onClick={logout}>Logout</button>
+                                        <button onClick={logout}>Logout (<strong>{userName.toUpperCase()}</strong>)</button>
                                     </a>
                                 </li>
                             </>
                         )}
 
                         {
-                            !isAuthenticated && <li><button onClick={login}>Login</button></li>
+                            !isAuthenticated && <li className="flex items-center p-1 text-sm gap-x-2 text-gray-200"><button onClick={login}>Login</button></li>
                         }
 
                     </ul>

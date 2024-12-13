@@ -2,6 +2,7 @@ import './App.css'
 import HomePage from './pages/HomePage';
 import Navbar from './components/Navbar';
 import NotificationPage from './pages/NotificationsPage'
+import RequestsPage from './pages/RequestsPage';
 import KeycloakProvider from './helper/KeycloakProvider';
 import AboutPage from './pages/AboutPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -20,6 +21,7 @@ function App() {
                         <Route exact path='/' element={<AboutPage />} />
                         <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute> } />
                         <Route path='/notifications' element={<ProtectedRoute><NotificationPage /></ProtectedRoute>} />
+                        <Route path='/requests' element={<ProtectedRoute><RequestsPage /></ProtectedRoute>} />
                         {/* <Route path="/home" element={<HomePage /> } />
                         <Route path='/notifications' element={<NotificationPage />} /> */}
                     </Routes>
