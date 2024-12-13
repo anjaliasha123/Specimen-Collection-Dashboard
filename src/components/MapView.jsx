@@ -148,8 +148,8 @@ function MapView({ data }) {
                     let content = properties.features[0].getProperties();
                     setTooltipData({
                         visible: true,
-                        x: evt.pixel[0] + 10, // Screen coordinates for position
-                        y: evt.pixel[1] - 10,
+                        x: evt.pixel[0], // Screen coordinates for position
+                        y: evt.pixel[1]+80,
                         content: content,
                     });
                 }
